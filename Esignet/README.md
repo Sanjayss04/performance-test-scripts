@@ -47,7 +47,7 @@
    
    * signup default properties : Update the value for the properties according to the execution setup.
          mosip.signup.unauthenticated.txn.timeout=86400
-         mosip.signup.verified.txn.timeout=86400
+         mosip.signup.register.txn.timeout=86400
          mosip.signup.status-check.txn.timeout=86400
 
 * We need some jar files which needs to be added in lib folder of jmeter, PFA dependency links for your reference : 
@@ -113,7 +113,7 @@
    * Authentication (Preparation) - In this thread group we are authenticating with 2 types of auth factor i.e. "PWD" and "OTP". So we have added an If controller where according to the type of auth factor the controller will execute. In the If controller we are using a variable which is defined in the user defined variables as "authFactorType. When the authFactorType will be "PWD" the first If controller will be executed and which contains OAuth details endpoint. When the authFactorType will be "OTP" the second If controller will be executed which contains 2 api's OAuth Details and Send OTP endpoints. We cant use the preparation file for multiple runs.
    * Authentication (Execution) - For the execution also there are 2 If controller in which we have authentication endpoint for PWD and OTP respectively. The total preparation samples must be equal or higher in number.
 
-   * UI - Authentication Complete Flow (Execution) - In this thread we have kept all the ednpoints of the auth flow in a single thread group. Thread contains 2 types of auth factor i.e. "PWD" and "OTP" flow endpoints.
+   * UI - Authentication Complete Flow (Execution) - In this thread we have kept all the endpoints of the auth flow in a single thread group. Thread contains 2 types of auth factor i.e. "PWD" and "OTP" flow endpoints.
 
 *  UI - Authorization Code : 
    * Authorization Code (Preparation) - There will be 3 api's included in the preparation i.e. OAuth Details, Send OTP, Authentication Endpoint - OTP from which we will get the transaction id, OTP which will be used in the execution.  We cant use the preparation file for multiple runs.
@@ -171,8 +171,10 @@
 
 * Sign Up Service - Register (Preparation) : This thread contains 2 API's i.e. generate challenge and verify challenge. Will save the value of identifier which will be passed in both the API's in a csv file. Will also get a verified transaction id in the response header of verified challenge endpoint and will save the transaction id in the same csv file and will use that file in the execution.
 
-* Sign Up Service - Register (Execution) : This thread is for register API endpoint and will use a csv file to pass the value of identifier and verified transaction id. Will use the file generated from the preparation and it can't be used multiple times. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.verified.txn.timeout in signup default properties.
+* Sign Up Service - Register (Execution) : This thread is for register API endpoint and will use a csv file to pass the value of identifier and verified transaction id. Will use the file generated from the preparation and it can't be used multiple times. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.register.txn.timeout in signup default properties.
 
 * Sign Up Service - Registration Status (Preparation) : This thread contains 3 API's i.e. generate challenge, verify challenge and register API endpoints. Will save the transaction id generated from the response headers of verify challenge endpoint in a csv file and will use that in the execution.
 
-* Sign Up Service - Registration Status (Execution) : This thread contains Registration Status API endpoint. Will use the file generated from the preparation to pass the transaction id and it can be used multiple times as it will only give the latest status for the transaction id we are passing. The transaction id used has a expiry time which can be configured with the mentioned property mosip.signup.status-check.txn.timeout available in mosip config signup default properties. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.status-check.txn.timeout in signup default properties.
+* Sign Up Service - Registration Status (Execution) : This thread contains Registration Status API endpoint. Will use the file generated from the preparation to pass the transaction id and it can be used multiple times as it will only give the latest status for the transaction id we are passing. The transaction id used has a expiry time which can be configured with the mentioned property mosip.signup.status-check.txn.timeout available in mosip config signup default properties. We need to increase the expiry time of the transaction id we are getting from the preparation thread group so for that we need to update the mentioned property mosip.signup.status-check.txn.timeout in signup default properties. 
+
+* Sign Up Service - Registration Status Complete Flow (Execution) : According to scenario based approach this thread contains 5 sign up services endpoints which completes the whole flow of checking the resgistration status.
